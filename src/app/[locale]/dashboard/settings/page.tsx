@@ -16,9 +16,14 @@ export default function SettingsPage() {
   const t = useTranslations();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [baseUrl, setBaseUrl] = useState('https://your-domain.com');
 
   useEffect(() => {
     fetchUserData();
+    // Get base URL from window (client-side only)
+    if (typeof window !== 'undefined') {
+      setBaseUrl(window.location.origin);
+    }
   }, []);
 
   const fetchUserData = async () => {
@@ -159,7 +164,7 @@ export default function SettingsPage() {
                 <span style={{ fontSize: '1.5rem' }}>📦</span> Tracking Widget Code
               </h3>
               <p className={styles.description}>
-                Embeds a search box directly in your webpage. Customers search and see results inline. Perfect for a dedicated tracking page.
+                Simply add this single line of code to your website (Wix, WordPress, or any HTML page). The widget will automatically appear and work perfectly!
               </p>
               <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem' }}>
                 <a 
@@ -173,31 +178,24 @@ export default function SettingsPage() {
                 </a>
               </div>
               <div className={styles.codeContainer}>
-                <pre className={styles.codeBlock}>{`<!-- TrakoShip Tracking Widget - Inline Mode -->
-<script>
-  window.TrakoShipConfig = {
-    mode: 'inline',
-    userId: '${user.id}',
-    containerId: 'trakoship-search'
-  };
-</script>
-<script src="/widget.js"></script>
-<div id="trakoship-search"></div>`}</pre>
+                <pre className={styles.codeBlock}>{`<script type="text/javascript" src="${baseUrl}/api/script/widget.js?code=${user.id}"></script>`}</pre>
                 <button 
-                  onClick={() => copyToClipboard(`<!-- TrakoShip Tracking Widget - Inline Mode -->
-<script>
-  window.TrakoShipConfig = {
-    mode: 'inline',
-    userId: '${user.id}',
-    containerId: 'trakoship-search'
-  };
-</script>
-<script src="/widget.js"></script>
-<div id="trakoship-search"></div>`, 'Inline widget code')} 
+                  onClick={() => {
+                    const code = `<script type="text/javascript" src="${baseUrl}/api/script/widget.js?code=${user.id}"></script>`;
+                    copyToClipboard(code, 'Widget code');
+                  }} 
                   className={styles.copyBtn}
                 >
                   📋 Copy Code
                 </button>
+              </div>
+              <div style={{ background: '#f0f9ff', padding: '1rem', borderRadius: '0.5rem', marginTop: '1rem', border: '1px solid #0ea5e9' }}>
+                <strong style={{ fontSize: '0.95rem', color: '#0369a1' }}>💡 How to use:</strong>
+                <ol style={{ marginTop: '0.5rem', marginBottom: 0, paddingLeft: '1.5rem', color: '#0369a1', fontSize: '0.9rem' }}>
+                  <li style={{ marginBottom: '0.25rem' }}>Copy the code above</li>
+                  <li style={{ marginBottom: '0.25rem' }}>Paste it anywhere in your website's HTML (before &lt;/body&gt; tag)</li>
+                  <li style={{ marginBottom: '0.25rem' }}>The tracking widget will appear automatically!</li>
+                </ol>
               </div>
             </div>
 
